@@ -1,5 +1,8 @@
 FROM public.ecr.aws/docker/library/golang:1.24.2-alpine AS build
 
+# Install dependencies
+RUN go install github.com/pressly/goose/v3/cmd/goose@latest
+
 # Set the working directory
 WORKDIR /app
 
@@ -11,11 +14,14 @@ RUN go mod download
 
 # Copy the source code
 COPY main.go .
-COPY static .
-COPY templates .
 
 # Build the Go application
 RUN go build -o main .
+
+# Copy static files
+COPY migrations ./migrations
+COPY static ./static
+COPY templates ./templates
 
 # Use a smaller base image for the final stage
 FROM alpine:latest

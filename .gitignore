@@ -1,5 +1,6 @@
 .go
 goalzi
+manifest.json
 
 # IDE-specific files
 .vscode/

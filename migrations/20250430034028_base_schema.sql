@@ -1,3 +1,4 @@
+-- +goose Up
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -49,3 +50,11 @@ CREATE TABLE comments (
     content TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+-- +goose Down
+DROP TABLE comments;
+DROP TABLE followers;
+DROP TABLE likes;
+DROP TABLE aspiration_updates;
+DROP TABLE administrators;
+DROP TABLE users;

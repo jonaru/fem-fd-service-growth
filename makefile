@@ -39,14 +39,6 @@ build-image-pull: build-image-login
 
 build-image-migrate:
 	docker container run \
-		--entrypoint "dockerize" \
-		--network "host" \
-		--rm \
-		$(BUILD_IMAGE):$(GIT_SHA)-build \
-		-timeout 30s \
-		-wait \
-		$(DOCKERIZE_URL)
-	docker container run \
 		--entrypoint "goose" \
 		--env "GOOSE_DBSTRING" \
 		--env "GOOSE_DRIVER" \
@@ -54,6 +46,14 @@ build-image-migrate:
 		--rm \
 		$(BUILD_IMAGE):$(GIT_SHA)-build \
 		-dir $(MIGRATION_DIR) validate
+	docker container run \
+		--entrypoint "dockerize" \
+		--network "host" \
+		--rm \
+		$(BUILD_IMAGE):$(GIT_SHA)-build \
+		-timeout 30s \
+		-wait \
+		$(DOCKERIZE_URL)
 	docker container run \
 		--entrypoint "goose" \
 		--env "GOOSE_DBSTRING" \

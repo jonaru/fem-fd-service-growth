@@ -26,8 +26,6 @@ RUN go build -o main .
 
 # Copy static files
 COPY migrations ./migrations
-COPY static ./static
-COPY templates ./templates
 
 # Use a smaller base image for the final stage
 FROM alpine:latest
@@ -37,6 +35,8 @@ WORKDIR /app
 
 # Copy the binary from the build stage
 COPY --from=build /app/main .
+COPY static ./static
+COPY templates ./templates
 
 # Expose the port the app runs on
 EXPOSE 8080

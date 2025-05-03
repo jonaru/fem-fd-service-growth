@@ -44,7 +44,7 @@ jobs:
         run: make down
 
   deploy:
-    if: github.ref == 'refs/head/main'
+    # if: github.ref == 'refs/head/main'
     needs:
       - test
     runs-on: ubuntu-latest

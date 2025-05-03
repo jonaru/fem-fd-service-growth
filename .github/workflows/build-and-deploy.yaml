@@ -58,6 +58,7 @@ jobs:
         run: make build-image-pull
 
       - env:
+          DOCKERIZE_URL: ${{ secrets.GOOSE_DBSTRING }}
           GOOSE_DBSTRING: ${{ secrets.GOOSE_DBSTRING }}
           GOOSE_DRIVER: ${{ vars.GOOSE_DRIVER }}
         run: make build-image-migrate

@@ -3,7 +3,7 @@ AWS_ACCOUNT_ID := 677459762413
 AWS_REGION := us-west-2
 AWS_ECR_DOMAIN := $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com
 GIT_SHA := $(shell git rev-parse HEAD)
-BUILD_IMAGE := $(AWS_ECR_DOMAIN)/fem-fd-service
+BUILD_IMAGE := $(AWS_ECR_DOMAIN)/fem-fd-service-preview
 DOCKERIZE_HOST := $(shell echo $(GOOSE_DBSTRING) | cut -d "@" -f 2 | cut -d ":" -f 1)
 DOCKERIZE_URL := tcp://$(if $(DOCKERIZE_HOST),$(DOCKERIZE_HOST):5432,localhost:5432)
 .DEFAULT_GOAL := build
@@ -39,14 +39,6 @@ build-image-pull: build-image-login
 
 build-image-migrate:
 	docker container run \
-		--entrypoint "goose" \
-		--env "GOOSE_DBSTRING" \
-		--env "GOOSE_DRIVER" \
-		--network "host" \
-		--rm \
-		$(BUILD_IMAGE):$(GIT_SHA)-build \
-		-dir $(MIGRATION_DIR) validate
-	docker container run \
 		--entrypoint "dockerize" \
 		--network "host" \
 		--rm \
@@ -61,7 +53,7 @@ build-image-migrate:
 		--network "host" \
 		--rm \
 		$(BUILD_IMAGE):$(GIT_SHA)-build \
-		-dir $(MIGRATION_DIR) up
+		-dir $(MIGRATION_DIR) status
 	docker container run \
 		--entrypoint "goose" \
 		--env "GOOSE_DBSTRING" \
@@ -69,7 +61,15 @@ build-image-migrate:
 		--network "host" \
 		--rm \
 		$(BUILD_IMAGE):$(GIT_SHA)-build \
-		-dir $(MIGRATION_DIR) status
+		-dir $(MIGRATION_DIR) validate
+	docker container run \
+		--entrypoint "goose" \
+		--env "GOOSE_DBSTRING" \
+		--env "GOOSE_DRIVER" \
+		--network "host" \
+		--rm \
+		$(BUILD_IMAGE):$(GIT_SHA)-build \
+		-dir $(MIGRATION_DIR) up
 
 build-image-promote:
 	docker image tag $(BUILD_IMAGE):$(GIT_SHA) $(BUILD_IMAGE):latest

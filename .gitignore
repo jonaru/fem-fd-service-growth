@@ -1,3 +1,6 @@
+.terraform
+*.tfplan
+
 .go
 goalzi
 manifest.json

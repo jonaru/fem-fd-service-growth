@@ -4,6 +4,7 @@ AWS_DEFAULT_REGION := us-west-2
 AWS_ECR_DOMAIN := $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_DEFAULT_REGION).amazonaws.com
 GIT_SHA := $(shell git rev-parse HEAD)
 BUILD_IMAGE := $(AWS_ECR_DOMAIN)/fem-fd-service-preview
+BUILD_TAG := $(if $(BUILD_TAG),$(BUILD_TAG),latest)
 DOCKERIZE_HOST := $(shell echo $(GOOSE_DBSTRING) | cut -d "@" -f 2 | cut -d ":" -f 1)
 DOCKERIZE_URL := tcp://$(if $(DOCKERIZE_HOST),$(DOCKERIZE_HOST):5432,localhost:5432)
 .DEFAULT_GOAL := build
@@ -70,8 +71,8 @@ build-image-migrate:
 		-dir $(MIGRATION_DIR) up
 
 build-image-promote:
-	docker image tag $(BUILD_IMAGE):$(GIT_SHA) $(BUILD_IMAGE):latest
-	docker image push $(BUILD_IMAGE):latest
+	docker image tag $(BUILD_IMAGE):$(GIT_SHA) $(BUILD_IMAGE):$(BUILD_TAG)
+	docker image push $(BUILD_IMAGE):$(BUILD_TAG)
 
 down:
 	docker compose down --remove-orphans --volumes

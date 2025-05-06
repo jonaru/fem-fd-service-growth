@@ -40,7 +40,7 @@ module "service" {
   cluster_name      = var.name
   image_registry    = "${data.aws_caller_identity.this.account_id}.dkr.ecr.${data.aws_region.this.name}.amazonaws.com"
   image_repository  = "fem-fd-service-preview"
-  image_tag         = "latest"
+  image_tag         = var.name
   listener_arn      = module.cluster.listener_arn
   name              = "service"
   paths             = ["/*"]

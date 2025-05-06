@@ -42,7 +42,7 @@ build-image-migrate:
 		--entrypoint "dockerize" \
 		--network "host" \
 		--rm \
-		$(BUILD_IMAGE):$(GIT_SHA)-build \
+		$(BUILD_IMAGE):$(GIT_SHA) \
 		-timeout 30s \
 		-wait \
 		$(DOCKERIZE_URL)
@@ -52,7 +52,7 @@ build-image-migrate:
 		--env "GOOSE_DRIVER" \
 		--network "host" \
 		--rm \
-		$(BUILD_IMAGE):$(GIT_SHA)-build \
+		$(BUILD_IMAGE):$(GIT_SHA) \
 		-dir $(MIGRATION_DIR) status
 	docker container run \
 		--entrypoint "goose" \
@@ -60,7 +60,7 @@ build-image-migrate:
 		--env "GOOSE_DRIVER" \
 		--network "host" \
 		--rm \
-		$(BUILD_IMAGE):$(GIT_SHA)-build \
+		$(BUILD_IMAGE):$(GIT_SHA) \
 		-dir $(MIGRATION_DIR) validate
 	docker container run \
 		--entrypoint "goose" \
@@ -68,7 +68,7 @@ build-image-migrate:
 		--env "GOOSE_DRIVER" \
 		--network "host" \
 		--rm \
-		$(BUILD_IMAGE):$(GIT_SHA)-build \
+		$(BUILD_IMAGE):$(GIT_SHA) \
 		-dir $(MIGRATION_DIR) up
 
 build-image-promote:

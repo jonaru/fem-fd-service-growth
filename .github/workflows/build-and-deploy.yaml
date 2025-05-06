@@ -72,5 +72,5 @@ jobs:
           echo "ECS_CLUSTER_NAME: ${ECS_CLUSTER_NAME}"
           echo "ECS_SERVICE_NAME: ${ECS_SERVICE_NAME}"
 
-          make build-image-promote
-          make deploy
+          make BUILD_TAG=$BUILD_TAG build-image-promote
+          make ECS_CLUSTER_NAME=$ECS_CLUSTER_NAME ECS_SERVICE_NAME=$ECS_SERVICE_NAME deploy

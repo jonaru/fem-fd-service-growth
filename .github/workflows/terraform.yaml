@@ -80,7 +80,10 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         name: tf-plan
-        path: terraform/terraform.tfplan
+
+    - run: ls -alh
+
+    - run: mv terraform.tfplan ./terraform/terraform.tfplan
 
     - run: terraform init
       working-directory: ./terraform

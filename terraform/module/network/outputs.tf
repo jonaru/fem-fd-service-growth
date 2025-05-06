@@ -1,5 +1,5 @@
 output "database_security_group" {
-  value = module.security_group_elasticache.security_group_id
+  value = module.security_group_db.security_group_id
 }
 
 output "database_subnets" {

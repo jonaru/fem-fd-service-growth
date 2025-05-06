@@ -32,14 +32,30 @@ module "cluster" {
   }
 }
 
-module "service-example" {
+module "service" {
   source = "../service"
 
   capacity_provider = "spot"
   cluster_id        = module.cluster.cluster_arn
   cluster_name      = var.name
+  image_registry    = "${data.aws_caller_identity.this.account_id}.dkr.ecr.${data.aws_region.this.name}.amazonaws.com"
+  image_repository  = "fem-fd-service-preview"
+  image_tag         = "latest"
   listener_arn      = module.cluster.listener_arn
-  name              = "example"
+  name              = "service"
   paths             = ["/*"]
+  port              = 8080
   vpc_id            = module.network.vpc_id
+
+  config = {
+    GOOGLE_REDIRECT_URL = "${module.cluster.distribution_domain}/auth/google/callback"
+    GOOSE_DRIVER        = "postgres"
+  }
+
+  secrets = [
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET",
+    "GOOSE_DBSTRING",
+    "POSTGRES_URL",
+  ]
 }

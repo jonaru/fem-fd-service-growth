@@ -24,9 +24,6 @@ COPY main.go .
 # Build the Go application
 RUN go build -o main .
 
-# Copy static files
-COPY migrations ./migrations
-
 # Use a smaller base image for the final stage
 FROM alpine:latest
 
@@ -35,6 +32,8 @@ WORKDIR /app
 
 # Copy the binary from the build stage
 COPY --from=build /app/main .
+COPY --from=build /go/bin/goose /usr/local/bin/goose
+COPY migrations ./migrations
 COPY static ./static
 COPY templates ./templates
 

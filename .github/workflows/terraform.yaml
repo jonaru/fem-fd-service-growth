@@ -68,7 +68,7 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    # if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     needs:
       - plan
     runs-on: ubuntu-latest
@@ -80,8 +80,6 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         name: tf-plan
-
-    - run: ls -alh
 
     - run: mv terraform.tfplan ./terraform/terraform.tfplan
 

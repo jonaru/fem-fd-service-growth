@@ -1,7 +1,7 @@
 MIGRATION_DIR := migrations
 AWS_ACCOUNT_ID := 677459762413
-AWS_REGION := us-west-2
-AWS_ECR_DOMAIN := $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com
+AWS_DEFAULT_REGION := us-west-2
+AWS_ECR_DOMAIN := $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_DEFAULT_REGION).amazonaws.com
 GIT_SHA := $(shell git rev-parse HEAD)
 BUILD_IMAGE := $(AWS_ECR_DOMAIN)/fem-fd-service-preview
 DOCKERIZE_HOST := $(shell echo $(GOOSE_DBSTRING) | cut -d "@" -f 2 | cut -d ":" -f 1)
@@ -80,6 +80,12 @@ down:
 
 up: down
 	docker compose up --detach
+
+deploy:
+	AWS_ACCOUNT_ID=$(AWS_ACCOUNT_ID) \
+	AWS_DEFAULT_REGION=$(AWS_DEFAULT_REGION) \
+	AWS_ECR_DOMAIN=$(AWS_ECR_DOMAIN) \
+	./deploy.sh
 
 migrate:
 	goose -dir "$(MIGRATION_DIR)" up

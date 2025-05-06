@@ -5,7 +5,7 @@ module "parameter_secure" {
   version = "1.1.2"
 
   ignore_value_changes = true
-  name                 = "/${local.fullname}/${lower(replace(each.key, "_", "-"))}"
+  name                 = "/${var.cluster_name}/service/${lower(replace(each.key, "_", "-"))}"
   secure_type          = true
   value                = "example"
 }
@@ -76,6 +76,15 @@ resource "aws_ecs_task_definition" "this" {
           valueFrom = module.parameter_secure[item].ssm_parameter_arn
         }
       ]
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.this.name
+          "awslogs-region"        = data.aws_region.this.name
+          "awslogs-stream-prefix" = "svc"
+        }
+      }
     },
   ])
 }

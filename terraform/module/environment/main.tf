@@ -10,15 +10,19 @@ module "network" {
 module "database" {
   source = "../database"
 
-  name     = var.name
-  vpc_name = module.network.vpc_name
+  security_groups = [module.network.database_security_group]
+  subnets         = module.network.database_subnets
+  name            = var.name
+  vpc_name        = module.network.vpc_name
 }
 
 module "cluster" {
   source = "../cluster"
 
-  name     = var.name
-  vpc_name = module.network.vpc_name
+  security_groups = [module.network.private_security_group]
+  subnets         = module.network.private_subnets
+  name            = var.name
+  vpc_id          = module.network.vpc_id
 
   capacity_providers = {
     "spot" = {
@@ -32,9 +36,10 @@ module "service-example" {
   source = "../service"
 
   capacity_provider = "spot"
+  cluster_id        = module.cluster.cluster_arn
   cluster_name      = var.name
   listener_arn      = module.cluster.listener_arn
   name              = "example"
   paths             = ["/*"]
-  vpc_name          = module.network.vpc_name
+  vpc_id            = module.network.vpc_id
 }

@@ -1,12 +1,6 @@
 resource "aws_security_group" "load_balancer" {
   name_prefix = var.name
-  vpc_id      = data.aws_vpc.this.id
-
-  tags = {
-    Name      = var.name
-    Network   = var.vpc_name
-    Terraform = "terraform-aws-cluster"
-  }
+  vpc_id      = var.vpc_id
 }
 
 resource "aws_vpc_security_group_ingress_rule" "http" {
@@ -16,12 +10,6 @@ resource "aws_vpc_security_group_ingress_rule" "http" {
   from_port   = 80
   ip_protocol = "tcp"
   to_port     = 80
-
-  tags = {
-    Name      = var.name
-    Network   = var.vpc_name
-    Terraform = "terraform-aws-cluster"
-  }
 }
 
 resource "aws_vpc_security_group_egress_rule" "all" {
@@ -29,12 +17,6 @@ resource "aws_vpc_security_group_egress_rule" "all" {
 
   cidr_ipv4   = "0.0.0.0/0"
   ip_protocol = "-1"
-
-  tags = {
-    Name      = var.name
-    Network   = var.vpc_name
-    Terraform = "terraform-aws-cluster"
-  }
 }
 
 resource "aws_lb" "this" {
@@ -43,18 +25,12 @@ resource "aws_lb" "this" {
   internal                   = true
   load_balancer_type         = "application"
   preserve_host_header       = false
-  subnets                    = data.aws_subnets.private.ids
+  subnets                    = var.subnets
 
-  security_groups = [
-    aws_security_group.load_balancer.id,
-    data.aws_security_group.private.id,
-  ]
-
-  tags = {
-    Name      = var.name
-    Network   = var.vpc_name
-    Terraform = "terraform-aws-cluster"
-  }
+  security_groups = concat(
+    [aws_security_group.load_balancer.id],
+    var.security_groups,
+  )
 }
 
 resource "aws_lb_listener" "http" {

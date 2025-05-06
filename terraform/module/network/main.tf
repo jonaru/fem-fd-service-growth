@@ -35,9 +35,4 @@ module "vpc" {
       self = true
     }
   ]
-
-  tags = {
-    Network   = var.name
-    Terraform = "terraform-aws-network"
-  }
 }

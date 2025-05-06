@@ -7,6 +7,14 @@ variable "name" {
   type = string
 }
 
-variable "vpc_name" {
+variable "security_groups" {
+  type = list(string)
+}
+
+variable "subnets" {
+  type = list(string)
+}
+
+variable "vpc_id" {
   type = string
 }

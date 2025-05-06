@@ -5,23 +5,11 @@ resource "aws_ecs_cluster" "this" {
     name  = "containerInsights"
     value = "enabled"
   }
-
-  tags = {
-    Name      = var.name
-    Network   = var.vpc_name
-    Terraform = "terraform-aws-ecs"
-  }
 }
 
 resource "aws_iam_role" "this" {
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
   name               = var.name
-
-  tags = {
-    Name      = var.name
-    Network   = var.vpc_name
-    Terraform = "terraform-aws-ecs"
-  }
 }
 
 resource "aws_iam_role_policy_attachment" "service_role" {
@@ -32,12 +20,6 @@ resource "aws_iam_role_policy_attachment" "service_role" {
 resource "aws_iam_instance_profile" "this" {
   name = var.name
   role = aws_iam_role.this.name
-
-  tags = {
-    Name      = var.name
-    Network   = var.vpc_name
-    Terraform = "terraform-aws-ecs"
-  }
 }
 
 resource "tls_private_key" "this" {
@@ -91,18 +73,12 @@ resource "aws_launch_template" "this" {
 
   network_interfaces {
     associate_public_ip_address = false
-    security_groups             = [data.aws_security_group.private.id]
+    security_groups             = var.security_groups
   }
 
   user_data = base64encode(templatefile("${path.module}/user_data.tpl", {
     cluster_name = var.name
   }))
-
-  tags = {
-    Name      = var.name
-    Network   = var.vpc_name
-    Terraform = "terraform-aws-ecs"
-  }
 }
 
 resource "aws_autoscaling_group" "this" {
@@ -112,7 +88,7 @@ resource "aws_autoscaling_group" "this" {
   max_size            = 1
   min_size            = 1
   name_prefix         = "${var.name}-${each.key}-"
-  vpc_zone_identifier = data.aws_subnets.private.ids
+  vpc_zone_identifier = var.subnets
 
   launch_template {
     id      = aws_launch_template.this[each.key].id
@@ -171,12 +147,6 @@ resource "aws_ecs_capacity_provider" "this" {
   }
 
   depends_on = [aws_security_group.load_balancer]
-
-  tags = {
-    Name      = var.name
-    Network   = var.vpc_name
-    Terraform = "terraform-aws-ecs"
-  }
 }
 
 resource "aws_ecs_cluster_capacity_providers" "this" {

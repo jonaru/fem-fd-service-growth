@@ -2,6 +2,10 @@ variable "capacity_provider" {
   type = string
 }
 
+variable "cluster_id" {
+  type = string
+}
+
 variable "cluster_name" {
   type = string
 }
@@ -63,11 +67,6 @@ variable "secrets" {
   type    = list(string)
 }
 
-variable "tags" {
-  default = {}
-  type    = map(string)
-}
-
-variable "vpc_name" {
+variable "vpc_id" {
   type = string
 }

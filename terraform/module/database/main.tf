@@ -19,10 +19,5 @@ module "this" {
   publicly_accessible                 = false
   skip_final_snapshot                 = true
   username                            = replace(var.name, "-", "_")
-  vpc_security_group_ids              = [data.aws_security_group.this.id]
-
-  tags = {
-    Network   = var.vpc_name
-    Terraform = "terraform-aws-database"
-  }
+  vpc_security_group_ids              = var.security_groups
 }

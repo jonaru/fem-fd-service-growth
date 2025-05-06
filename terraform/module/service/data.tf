@@ -1,16 +1,3 @@
-data "aws_caller_identity" "this" {}
-
-data "aws_ecs_cluster" "this" {
-  cluster_name = var.cluster_name
-}
-
-data "aws_vpc" "this" {
-  filter {
-    name   = "tag:Name"
-    values = [var.vpc_name]
-  }
-}
-
 data "aws_iam_policy_document" "execution_assume_role" {
   statement {
     actions = ["sts:AssumeRole"]

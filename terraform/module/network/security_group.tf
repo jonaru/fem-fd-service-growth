@@ -25,11 +25,6 @@ module "security_group_bastion" {
       rule = "all-all"
     }
   ]
-
-  tags = {
-    Network   = var.name
-    Terraform = "terraform-aws-network"
-  }
 }
 
 module "security_group_db" {
@@ -52,11 +47,6 @@ module "security_group_db" {
       rule = "all-all"
     }
   ]
-
-  tags = {
-    Network   = var.name
-    Terraform = "terraform-aws-network"
-  }
 }
 
 module "security_group_elasticache" {
@@ -79,11 +69,6 @@ module "security_group_elasticache" {
       rule = "all-all"
     }
   ]
-
-  tags = {
-    Network   = var.name
-    Terraform = "terraform-aws-network"
-  }
 }
 
 module "security_group_private" {
@@ -106,11 +91,6 @@ module "security_group_private" {
       rule = "all-all"
     }
   ]
-
-  tags = {
-    Network   = var.name
-    Terraform = "terraform-aws-network"
-  }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "db_allow_private" {
@@ -120,11 +100,6 @@ resource "aws_vpc_security_group_ingress_rule" "db_allow_private" {
   referenced_security_group_id = module.security_group_private.security_group_id
   security_group_id            = module.security_group_db.security_group_id
   to_port                      = 5432
-
-  tags = {
-    Network   = var.name
-    Terraform = "terraform-aws-network"
-  }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "elasticache_allow_private" {
@@ -134,9 +109,4 @@ resource "aws_vpc_security_group_ingress_rule" "elasticache_allow_private" {
   referenced_security_group_id = module.security_group_private.security_group_id
   security_group_id            = module.security_group_elasticache.security_group_id
   to_port                      = 6379
-
-  tags = {
-    Network   = var.name
-    Terraform = "terraform-aws-network"
-  }
 }

@@ -8,19 +8,16 @@ module "parameter_secure" {
   name                 = "/${local.fullname}/${lower(replace(each.key, "_", "-"))}"
   secure_type          = true
   value                = "example"
-  tags                 = local.tags
 }
 
 resource "aws_cloudwatch_log_group" "this" {
   name              = local.fullname
   retention_in_days = var.log_retention
-  tags              = local.tags
 }
 
 resource "aws_iam_role" "execution" {
   assume_role_policy = data.aws_iam_policy_document.execution_assume_role.json
   name               = "${local.fullname}-execution"
-  tags               = local.tags
 }
 
 resource "aws_iam_policy" "execution_policy" {
@@ -28,7 +25,6 @@ resource "aws_iam_policy" "execution_policy" {
 
   name   = "${local.fullname}-execution"
   policy = data.aws_iam_policy_document.execution_policy.json
-  tags   = local.tags
 }
 
 resource "aws_iam_role_policy_attachment" "execution_policy" {
@@ -51,13 +47,11 @@ resource "aws_iam_role_policy_attachment" "execution_ec2" {
 resource "aws_iam_role" "task" {
   assume_role_policy = data.aws_iam_policy_document.task_assume_role.json
   name               = "${local.fullname}-task"
-  tags               = local.tags
 }
 
 resource "aws_ecs_task_definition" "this" {
   execution_role_arn = aws_iam_role.execution.arn
   family             = local.fullname
-  tags               = local.tags
   task_role_arn      = aws_iam_role.task.arn
 
   container_definitions = jsonencode([
@@ -89,7 +83,6 @@ resource "aws_ecs_task_definition" "this" {
 resource "aws_iam_role" "service" {
   assume_role_policy = data.aws_iam_policy_document.service_assume_role.json
   name               = "${local.fullname}-service"
-  tags               = local.tags
 }
 
 resource "aws_iam_role_policy_attachment" "service" {
@@ -102,14 +95,7 @@ resource "aws_lb_target_group" "service" {
   load_balancing_cross_zone_enabled = true
   port                              = var.port
   protocol                          = "HTTP"
-  vpc_id                            = data.aws_vpc.this.id
-
-  tags = {
-    Cluster     = var.cluster_name
-    Name        = var.name
-    Network     = var.vpc_name
-    ServiceName = var.name
-  }
+  vpc_id                            = var.vpc_id
 }
 
 resource "aws_lb_listener_rule" "service" {
@@ -128,11 +114,10 @@ resource "aws_lb_listener_rule" "service" {
 }
 
 resource "aws_ecs_service" "this" {
-  cluster         = data.aws_ecs_cluster.this.id
+  cluster         = var.cluster_id
   desired_count   = 1
   iam_role        = aws_iam_role.service.arn
   name            = local.fullname
-  tags            = local.tags
   task_definition = aws_ecs_task_definition.this.arn
 
   capacity_provider_strategy {

@@ -48,7 +48,7 @@ module "service" {
   vpc_id            = module.network.vpc_id
 
   config = {
-    GOOGLE_REDIRECT_URL = "${module.cluster.distribution_domain}/auth/google/callback"
+    GOOGLE_REDIRECT_URL = "https://${module.cluster.distribution_domain}/auth/google/callback"
     GOOSE_DRIVER        = "postgres"
   }
 

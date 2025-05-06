@@ -1,13 +1,7 @@
 FROM public.ecr.aws/docker/library/golang:1.24.2-alpine AS build
 
-ENV DOCKERIZE_VERSION=v0.9.3
-
 # Install dependencies
-RUN apk update --no-cache \
-    && apk add --no-cache wget openssl \
-    && wget -O - https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz | tar xzf - -C /usr/local/bin \
-    && apk del wget \
-    && go install github.com/pressly/goose/v3/cmd/goose@latest
+RUN go install github.com/pressly/goose/v3/cmd/goose@latest
 
 # Set the working directory
 WORKDIR /app
@@ -26,6 +20,15 @@ RUN go build -o main .
 
 # Use a smaller base image for the final stage
 FROM alpine:latest
+
+# Set environment variables
+ENV DOCKERIZE_VERSION=v0.9.3
+
+# Install dependencies
+RUN apk update --no-cache \
+    && apk add --no-cache wget openssl \
+    && wget -O - https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz | tar xzf - -C /usr/local/bin \
+    && apk del wget
 
 # Set the working directory
 WORKDIR /app

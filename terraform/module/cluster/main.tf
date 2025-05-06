@@ -85,7 +85,7 @@ resource "aws_autoscaling_group" "this" {
   for_each = { for provider_name, provider in var.capacity_providers : provider_name => provider }
 
   desired_capacity    = 1
-  max_size            = 1
+  max_size            = 5
   min_size            = 1
   name_prefix         = "${var.name}-${each.key}-"
   vpc_zone_identifier = var.subnets

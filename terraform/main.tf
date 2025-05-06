@@ -1,13 +1,13 @@
 module "staging" {
   source = "./module/environment"
 
-  bastion_ingress = ["162.232.14.171/32"]
+  bastion_ingress = local.bastion_ingress
   name            = "staging"
 }
 
-# module "staging" {
-#   source = "./module/environment"
-#
-#   bastion_ingress = ["162.232.14.171/32"]
-#   name            = "staging"
-# }
+module "prod" {
+  source = "./module/environment"
+
+  bastion_ingress = local.bastion_ingress
+  name            = "prod"
+}

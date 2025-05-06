@@ -49,7 +49,6 @@ jobs:
       AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
       AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      DOCKERIZE_URL: ${{ secrets.GOOSE_DBSTRING }}
       ECS_CLUSTER_NAME: "fem-fd-dev"
       ECS_SERVICE_NAME: "fem-fd-dev-service"
     # if: github.ref == 'refs/head/main'

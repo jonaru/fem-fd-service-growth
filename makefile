@@ -10,7 +10,7 @@ DOCKERIZE_URL := tcp://$(if $(DOCKERIZE_HOST),$(DOCKERIZE_HOST):5432,localhost:5
 .DEFAULT_GOAL := build
 
 build:
-	go build -o ./goalzi main.go
+	go build -o ./goals main.go
 
 build-image:
 	docker buildx build \
@@ -91,4 +91,4 @@ migrate-validate:
 	goose -dir "$(MIGRATION_DIR)" validate
 
 start: build
-	./goalzi
+	./goals

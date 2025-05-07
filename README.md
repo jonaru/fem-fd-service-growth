@@ -2,7 +2,7 @@
 
 Example Go application from Fullstack Deployment: From Containers to Production AWS on Frontend Masters.
 
-## goalzi
+## goals
 
 A platform for setting and sharing life goals and aspirations.
 

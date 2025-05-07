@@ -9,7 +9,6 @@ DOCKERIZE_HOST := $(shell echo $(GOOSE_DBSTRING) | cut -d "@" -f 2 | cut -d ":" 
 DOCKERIZE_URL := tcp://$(if $(DOCKERIZE_HOST),$(DOCKERIZE_HOST):5432,localhost:5432)
 .DEFAULT_GOAL := build
 
-# Targets
 build:
 	go build -o ./goals main.go
 
@@ -26,13 +25,13 @@ build-image:
 		.
 
 build-image-login:
-	aws ecr get-login-password --region us-west-2 | docker login \
+	aws ecr get-login-password --region $(AWS_DEFAULT_REGION) | docker login \
 		--username AWS \
 		--password-stdin \
 		$(AWS_ECR_DOMAIN)
 
 build-image-push: build-image-login 
-	docker image push $(BUILD_IMAGE):$(BUILD_TAG)
+	docker image push $(BUILD_IMAGE):$(GIT_SHA)
 
 build-image-pull: build-image-login 
 	docker image pull $(BUILD_IMAGE):$(GIT_SHA)

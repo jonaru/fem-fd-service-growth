@@ -1,7 +1,7 @@
 MIGRATION_DIR := migrations
 AWS_ACCOUNT_ID := 145250016408
 AWS_DEFAULT_REGION := eu-central-1
-AWS_ECR_DOMAIN := $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_DEFAULT_REGION).amazonaws.com
+AWS_ECR_DOMAIN := $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_DEFAULT_REGION).amazonaws.com/fem-fd-service
 GIT_SHA := $(shell git rev-parse HEAD)
 BUILD_IMAGE := $(AWS_ECR_DOMAIN)/fem-fd-service-preview
 BUILD_TAG := $(if $(BUILD_TAG),$(BUILD_TAG),latest)

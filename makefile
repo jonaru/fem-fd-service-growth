@@ -1,6 +1,6 @@
 MIGRATION_DIR := migrations
-AWS_ACCOUNT_ID := 677459762413
-AWS_DEFAULT_REGION := us-west-2
+AWS_ACCOUNT_ID := 145250016408
+AWS_DEFAULT_REGION := eu-central-1
 AWS_ECR_DOMAIN := $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_DEFAULT_REGION).amazonaws.com
 GIT_SHA := $(shell git rev-parse HEAD)
 BUILD_IMAGE := $(AWS_ECR_DOMAIN)/fem-fd-service-preview
@@ -25,7 +25,7 @@ build-image:
 		.
 
 build-image-login:
-	aws ecr get-login-password --region us-west-2 | docker login \
+	aws ecr get-login-password --region eu-central-1 | docker login \
 		--username AWS \
 		--password-stdin \
 		$(AWS_ECR_DOMAIN)
